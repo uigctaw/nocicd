@@ -17,28 +17,31 @@ Note:
 Parameters:
 
 -d --rd --repos_dir : 
-    directory relative to \$HOME in which the repository will be located
+    Directory relative to \$HOME in which the repository will be located.
 
 -g --gu --github_user :
-    github user name
+    Github user name.
 
 -r --repo :
-    repository name
+    Repository name.
 
 
 Optional parameters:
 
 -b --rc --release_candidate (default release-candidate) :
-    name of git branch that will contain release candidates
+    Name of git branch that will contain release candidates.
 
 -h --help :
-    display this documentation
+    Displays this documentation.
 
 -n --no --nocicd --nocicd_script (default nocicd.sh) :
-    name of the script that will execute the CI/CD pipeline
+    Name of the script that will execute the CI/CD pipeline.
+
+--poetry :
+    Adds line 'poetry install' to remotely executed commands. Python Poetry.
 
 -t --ts --test --tests --test_script (default run_tests.sh) :
-    name of the script that executes tests
+    Name of the script that executes tests.
 "
 
 while [[ $# -gt 0 ]]; do
@@ -49,6 +52,7 @@ while [[ $# -gt 0 ]]; do
         -b|--rc|--release_candidate) REPO_NAME=$2; shift;;
         -h|--help) HELP=1;;
         -n|--no|--nocicd|--nocicd_script) NOCICD_SCRIPT=$2; shift;;
+        --poetry) POETRY=1;;
         -t|--ts|--test|--tests|--test_script) TEST_SCRIPT=$2; shift;;
         *) UNHANDLEDED_PARAMETER=$1;;
     esac
@@ -73,6 +77,11 @@ fi
 # defaults (reasonable?)
 if [[ $NOCICD_SCRIPT == "" ]]; then
     NOCICD_SCRIPT=nocicd.sh
+fi
+if [[ $POETRY == 1 ]]; then
+    POETRY="poetry install;"
+else
+    POETRY=""
 fi
 if [[ $RELEASE_CANDIDATE_BRANCH == "" ]]; then
     RELEASE_CANDIDATE_BRANCH=release-candidate
@@ -125,7 +134,9 @@ TEST_SCRIPT=$TEST_SCRIPT
 ./\$TEST_SCRIPT
 
 ssh dev@localhost -T "\\
+    . .profile;\\
     cd \$REPO_PATH;\\
+    $POETRY\\
     echo 'dev: checkout main and pull';\\
     git checkout main;\\
     git pull;\\
@@ -133,7 +144,9 @@ ssh dev@localhost -T "\\
     ./\$TEST_SCRIPT;\\
     " 
 ssh uat@localhost -T "\\
+    . .profile;\\
     cd \$REPO_PATH;\\
+    $POETRY\\
     echo 'uat: checkout main and pull';\\
     git checkout main;\\
     git pull;\\
