@@ -1,6 +1,7 @@
 # nocicd
 
-## About
+Agentless CI/CD script.
+
 *nocicd* as in "No CI/CD" where "no" means minimal or agentless.
 CI/CD stands for continuous integration / continuous delivery.
 
