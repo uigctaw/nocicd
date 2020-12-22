@@ -104,10 +104,6 @@ echo '#!/bin/bash' > $TEST_SCRIPT
 echo 'exit 0' >> $TEST_SCRIPT
 chmod u+x $TEST_SCRIPT
 
-echo '.*' > .gitignore
-echo '!/.gitignore' >> .gitignore
-echo $NOCICD_SCRIPT >> .gitignore
-
 git add .
 git commit -am 'initial boilerplate' --allow-empty
 git push
