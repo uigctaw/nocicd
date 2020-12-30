@@ -130,6 +130,7 @@ TEST_SCRIPT=$TEST_SCRIPT
 ./\$TEST_SCRIPT
 
 ssh dev@localhost -T "\\
+    set -e;\\
     . .profile;\\
     cd \$REPO_PATH;\\
     $POETRY\\
@@ -140,6 +141,7 @@ ssh dev@localhost -T "\\
     ./\$TEST_SCRIPT;\\
     " 
 ssh uat@localhost -T "\\
+    set -e;\\
     . .profile;\\
     cd \$REPO_PATH;\\
     $POETRY\\
